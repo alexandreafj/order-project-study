@@ -4,9 +4,11 @@ import { ItemService } from '../../src/item/service/item.service';
 import { ItemController } from '../../src/item/controller/item.controller';
 import { ItemTypes } from '../../src/item/class/item-types';
 import { ItemFilters } from '../../src/item/class/item-filters';
+import { UpdateItemDto } from '../../src/item/dto/update-item.dto';
+import { Item } from '../../src/item/class/Item';
 
 const mockItemServiceMethods = {
-  selectItems: jest.fn(() => Promise.resolve([])),
+  selectItems: jest.fn(() => Promise.resolve([new Item(), new Item()])),
   insertItem: jest.fn(() => Promise.resolve([])),
   deleteItem: jest.fn(() => Promise.resolve()),
   updateItem: jest.fn(() => Promise.resolve()),
@@ -50,6 +52,12 @@ describe('ItemController', () => {
     expect(spyService.insertItem).toHaveBeenCalledWith(createItemDto);
   });
 
+  it('should throw internal server error if something unexpected happens when create item', async () => {
+    const createItemDto = new CreateItemDto();
+    await expect(controller.createItem(createItemDto)).rejects.toEqual('try again later');
+    expect(spyService.insertItem).toBeCalledTimes(0);
+  });
+
   it('should get item', async () => {
     const itemFilters = new ItemFilters();
     itemFilters.limit = 100;
@@ -57,16 +65,18 @@ describe('ItemController', () => {
     itemFilters.name = 'test';
     itemFilters.price = 10;
     itemFilters.type = ItemTypes.Eletronic;
-    await controller.getItem(itemFilters);
+    const response = await controller.getItem(itemFilters);
     expect(spyService.selectItems).toBeCalledTimes(1);
     expect(spyService.selectItems).toHaveBeenCalledWith(itemFilters);
+    expect(response.length).toBe(2);
+    expect(response).toBeInstanceOf(Array);
   });
 
   it('should update item', async () => {
-    const createItemDto = new CreateItemDto();
-    await controller.createItem(createItemDto);
-    expect(spyService.insertItem).toBeCalledTimes(1);
-    expect(spyService.insertItem).toHaveBeenCalledWith(createItemDto);
+    const updateItemDto = new UpdateItemDto();
+    await controller.updateItem(updateItemDto);
+    expect(spyService.updateItem).toBeCalledTimes(1);
+    expect(spyService.updateItem).toHaveBeenCalledWith(updateItemDto);
   });
 
   // it('should delete item', async () => {

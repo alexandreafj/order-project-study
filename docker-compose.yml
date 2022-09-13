@@ -1,0 +1,44 @@
+version: '3'
+services:
+
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+
+  order-item-api:
+    image: order-item-api
+    container_name: order-item-api
+    build:
+      context: ./order-item-api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - order-item-api-node-modules:/order-item-api/node_modules
+      - ./order-item-api:/order-item-api
+    depends_on:
+      - redis
+      - db
+    links:
+      - redis
+      - db
+    environment:
+      PORT: 8081
+      MYSQL_HOST: db
+      MYSQL_PORT: "3306"
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: test
+      MYSQL_SYNCHRONIZE: "true"
+    ports:
+      - 8081:8081
+volumes:
+  order-item-api-node-modules:

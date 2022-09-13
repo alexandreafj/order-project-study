@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { Item } from '../class/Item';
 import { ItemFilters } from '../class/item-filters';
 import { CreateItemDto } from '../dto/createItem.dto';
+import { UpdateItemDto } from '../dto/update-item.dto';
 
 @Injectable()
 export class ItemService {
-    async selectItems(filters: ItemFilters) {
-
+    async selectItems(filters: ItemFilters): Promise<Array<Item>> {
+        return [new Item()];
     }
 
     async insertItem(createItemDto: CreateItemDto) {
@@ -16,7 +18,7 @@ export class ItemService {
 
     }
 
-    async updateItem() {
+    async updateItem(updateItemDto: UpdateItemDto) {
 
     }
 }

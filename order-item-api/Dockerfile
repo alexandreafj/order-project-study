@@ -1,0 +1,21 @@
+FROM node:18-alpine
+
+RUN \
+apk update && \
+apk upgrade && \
+apk add --upgrade dumb-init && \
+apk add git
+
+WORKDIR /order-item-api
+
+RUN chown -R node /order-item-api
+
+USER node
+
+COPY --chown=node:node ["package.json", "package-lock.json", "./"]
+
+RUN npm ci
+
+COPY --chown=node:node . .
+
+CMD ["dumb-init", "npm", "run", "start:prod"]
