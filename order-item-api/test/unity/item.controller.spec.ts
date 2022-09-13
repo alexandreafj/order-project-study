@@ -54,8 +54,10 @@ describe('ItemController', () => {
 
   it('should throw internal server error if something unexpected happens when create item', async () => {
     const createItemDto = new CreateItemDto();
+    const mockCreateItem = jest.spyOn(controller, 'createItem').mockRejectedValue(() => new Error('try again later'));
     await expect(controller.createItem(createItemDto)).rejects.toEqual('try again later');
     expect(spyService.insertItem).toBeCalledTimes(0);
+    expect(mockCreateItem).toBeCalledTimes(1);
   });
 
   it('should get item', async () => {
@@ -70,6 +72,16 @@ describe('ItemController', () => {
     expect(spyService.selectItems).toHaveBeenCalledWith(itemFilters);
     expect(response.length).toBe(2);
     expect(response).toBeInstanceOf(Array);
+  });
+
+  it('should throw internal server error if something unexpected happens when getting items', async () => {
+    const itemFilters = new ItemFilters();
+    itemFilters.limit = 100;
+    itemFilters.offset = 0;
+    itemFilters.name = 'test';
+    itemFilters.price = 10;
+    itemFilters.type = ItemTypes.Eletronic;
+    await expect(controller.getItem(itemFilters)).rejects.toEqual('try again later');
   });
 
   it('should update item', async () => {
