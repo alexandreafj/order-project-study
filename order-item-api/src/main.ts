@@ -3,13 +3,15 @@ import { AppModule } from './app.module';
 import * as csurf from 'csurf';
 import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as cookieParser from 'cookie-parser';
 let server = null;
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
   });
   app.use(helmet());
-  app.use(csurf());
+  app.use(cookieParser());
+  app.use(csurf({ cookie: true }));
   server = await app.listen(process.env.PORT || 8080);
   console.log(`server running on port ${process.env.PORT || 8080}`);
 }

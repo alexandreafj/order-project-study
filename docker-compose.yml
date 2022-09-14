@@ -1,14 +1,16 @@
 version: '3'
 services:
 
-  db:
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - 3306:3306
+  mysql:
+   image: mysql
+   restart: always
+   container_name: mysql-task
+   ports:
+    - 3306:3306
+   environment:
+     MYSQL_ROOT_PASSWORD: root
+   volumes:
+    - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   redis:
     image: redis
@@ -26,10 +28,10 @@ services:
       - ./order-item-api:/order-item-api
     depends_on:
       - redis
-      - db
+      - mysql
     links:
       - redis
-      - db
+      - mysql
     environment:
       PORT: 8081
       MYSQL_HOST: db

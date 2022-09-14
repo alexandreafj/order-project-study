@@ -16,7 +16,7 @@ describe('ItemController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpServer()).get('/item').expect(200).expect('');
+    return request(app.getHttpServer()).get('/item').expect(200).expect([{}]);
   });
 
   it('/ (POST)', () => {
@@ -25,5 +25,9 @@ describe('ItemController (e2e)', () => {
 
   it('/ (PUT)', () => {
     return request(app.getHttpServer()).put('/item').expect(204);
+  });
+
+  it('/ (DELETE)', () => {
+    return request(app.getHttpServer()).delete('/item').expect(204);
   });
 });

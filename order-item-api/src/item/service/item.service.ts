@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Item } from '../class/Item';
 import { ItemFilters } from '../class/item-filters';
 import { CreateItemDto } from '../dto/createItem.dto';
+import { DeleteItemDto } from '../dto/delete-item.dto';
 import { UpdateItemDto } from '../dto/update-item.dto';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class ItemService {
 
     }
 
-    async deleteItem() {
+    async deleteItem(deleteItemsDto: Array<DeleteItemDto>) {
 
     }
 

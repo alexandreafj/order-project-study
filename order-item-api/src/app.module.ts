@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ItemController } from './item/controller/item.controller';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ItemService } from './item/service/item.service';
+import { LoggerWinstonService } from './common/helpers/service/logger-winston.service';
 
 @Module({
   imports: [
@@ -12,7 +11,7 @@ import { ItemService } from './item/service/item.service';
       limit: 10,
     }),
   ],
-  controllers: [AppController, ItemController],
-  providers: [AppService, ItemService],
+  controllers: [ItemController],
+  providers: [ItemService, LoggerWinstonService],
 })
 export class AppModule { }
