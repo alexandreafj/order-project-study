@@ -60,12 +60,6 @@ describe('ItemController', () => {
     expect(spyService.insertItem).toHaveBeenCalledWith(createItemDto);
   });
 
-  // it('should throw internal server error if something unexpected happens when create item', async () => {
-  //   const createItemDto = new CreateItemDto();
-  //   await expect(controller.createItem(createItemDto)).toThrow()
-  //   expect(spyService.insertItem).toBeCalledTimes(0);
-  // });
-
   it('should get item', async () => {
     const itemFilters = new ItemFilters();
     itemFilters.limit = 100;
@@ -79,16 +73,6 @@ describe('ItemController', () => {
     expect(response.length).toBe(2);
     expect(response).toBeInstanceOf(Array);
   });
-
-  // it('should throw internal server error if something unexpected happens when getting items', async () => {
-  //   const itemFilters = new ItemFilters();
-  //   itemFilters.limit = 100;
-  //   itemFilters.offset = 0;
-  //   itemFilters.name = 'test';
-  //   itemFilters.price = 10;
-  //   itemFilters.type = ItemTypes.Eletronic;
-  //   await expect(controller.getItem(itemFilters)).rejects.toEqual('try again later');
-  // });
 
   it('should update item', async () => {
     const updateItemDto = new UpdateItemDto();

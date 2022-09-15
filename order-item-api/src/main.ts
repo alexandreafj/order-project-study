@@ -12,6 +12,7 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   app.use(csurf({ cookie: true }));
+  app.enableShutdownHooks();
   server = await app.listen(process.env.PORT || 8080);
   console.log(`server running on port ${process.env.PORT || 8080}`);
 }

@@ -1,4 +1,4 @@
-enum ItemTypes {
+export enum ItemTypes {
   Eletronic = 'eletronic',
   Headset = 'headset',
   Watch = 'watch',
@@ -6,4 +6,3 @@ enum ItemTypes {
   Mouse = 'mouse',
   Tv = 'tv',
 }
-export { ItemTypes };
