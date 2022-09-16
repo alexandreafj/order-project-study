@@ -22,9 +22,11 @@ import { ItemService } from '../service/item.service';
 export class ItemController {
   constructor(private readonly itemService: ItemService, private readonly loggerWinstonService: LoggerWinstonService) { }
   @Get()
+  @HttpCode(200)
   async getItem(@Param() params: ItemFilters): Promise<Array<Item>> {
     try {
       const items = await this.itemService.selectItems(params);
+      this.loggerWinstonService.log(WinstonLevels.Info, 'test');
       return items;
     } catch (error) {
       this.loggerWinstonService.log(WinstonLevels.Error, error.message);

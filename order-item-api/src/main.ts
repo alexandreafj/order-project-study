@@ -4,6 +4,7 @@ import * as csurf from 'csurf';
 import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
+require('newrelic');
 let server = null;
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {

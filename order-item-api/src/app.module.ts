@@ -6,6 +6,7 @@ import { LoggerWinstonService } from './common/helpers/service/logger-winston.se
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Item } from './entitys/item.entity';
+import { ItemRepository } from './repository/item.repository';
 
 @Module({
   imports: [
@@ -33,6 +34,6 @@ import { Item } from './entitys/item.entity';
     }),
   ],
   controllers: [ItemController],
-  providers: [ItemService, LoggerWinstonService],
+  providers: [ItemService, LoggerWinstonService, ItemRepository],
 })
 export class AppModule { }

@@ -17,8 +17,6 @@ export class ItemService {
     }
 
     async insertItem(createItemDto: CreateItemDto) {
-
-        //this.itemRepository.create();
     }
 
     async deleteItem(deleteItemsDto: Array<DeleteItemDto>) {

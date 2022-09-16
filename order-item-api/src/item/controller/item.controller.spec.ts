@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateItemDto } from '../../src/item/dto/createItem.dto';
-import { ItemService } from '../../src/item/service/item.service';
-import { ItemController } from '../../src/item/controller/item.controller';
-import { ItemTypes } from '../../src/item/class/item-types';
-import { ItemFilters } from '../../src/item/class/item-filters';
-import { UpdateItemDto } from '../../src/item/dto/update-item.dto';
-import { Item } from '../../src/item/class/Item';
-import { DeleteItemDto } from '../../src/item/dto/delete-item.dto';
-import { LoggerWinstonService } from '../../src/common/helpers/service/logger-winston.service';
+import { CreateItemDto } from '../dto/createItem.dto';
+import { ItemService } from '../service/item.service';
+import { ItemController } from './item.controller';
+import { ItemTypes } from '../class/item-types';
+import { ItemFilters } from '../class/item-filters';
+import { UpdateItemDto } from '../dto/update-item.dto';
+import { Item } from '../class/Item';
+import { DeleteItemDto } from '../dto/delete-item.dto';
+import { LoggerWinstonService } from '../../common/helpers/service/logger-winston.service';
 
 const mockItemServiceMethods = {
   selectItems: jest.fn(() => Promise.resolve([new Item(), new Item()])),
