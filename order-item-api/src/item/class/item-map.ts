@@ -1,15 +1,27 @@
 import { Item } from "src/entitys/item.entity";
 import { Mapper } from '../../common/interfaces/Mapper';
+import { ItemDto } from "../dto/Item-dto";
 
 class ItemMap implements Mapper<Item> {
     toDomain(raw: any): Item {
-        throw new Error("Method not implemented.");
+        return {
+            id: raw?.id ?? null,
+            description: raw?.description ?? null,
+            discount: raw?.discount ?? null,
+            name: raw?.name ?? null,
+            price: raw?.price ?? null,
+            type: raw?.type ?? null,
+        } as Item;
     }
-    toPersistance(t: Item): Item {
-        throw new Error("Method not implemented.");
-    }
-    toDTO(item: Item): Item {
-        throw new Error("Method not implemented.");
+    toDTO(item: Item): ItemDto {
+        return {
+            id: item?.id ?? null,
+            name: item?.name ?? null,
+            price: item?.price ?? null,
+            description: item?.description ?? null,
+            type: item?.type ?? null,
+            discount: item?.discount ?? null,
+        } as unknown as ItemDto;
     }
 
 }

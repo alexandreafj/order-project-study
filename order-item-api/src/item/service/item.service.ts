@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Item } from '../class/Item';
-import { Item as ItemEntity } from '../../entitys/item.entity';
 import { ItemFilters } from '../class/item-filters';
-import { CreateItemDto } from '../dto/createItem.dto';
-import { DeleteItemDto } from '../dto/delete-item.dto';
-import { UpdateItemDto } from '../dto/update-item.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ItemDto } from '../dto/Item-dto';
+
 
 @Injectable()
 export class ItemService {
@@ -16,14 +12,14 @@ export class ItemService {
         return [new Item()];
     }
 
-    async insertItem(createItemDto: CreateItemDto) {
+    async insertItem(createItemDto: ItemDto) {
     }
 
-    async deleteItem(deleteItemsDto: Array<DeleteItemDto>) {
+    async deleteItem(deleteItemsDto: Array<ItemDto>) {
 
     }
 
-    async updateItem(updateItemDto: UpdateItemDto) {
+    async updateItem(updateItemDto: ItemDto) {
 
     }
 }

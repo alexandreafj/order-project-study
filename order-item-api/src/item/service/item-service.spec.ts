@@ -4,7 +4,7 @@ import { LoggerWinstonService } from '../../common/helpers/service/logger-winsto
 import { ItemRepository } from '../../repository/item.repository';
 import { ItemService } from './item.service';
 import { Repository } from 'typeorm';
-import { CreateItemDto } from '../dto/createItem.dto';
+import { ItemDto } from '../dto/Item-dto';
 import { ItemTypes } from '../class/item-types';
 
 describe('ItemService', () => {
@@ -28,7 +28,7 @@ describe('ItemService', () => {
   });
 
   it('should create item', async () => {
-    const mockCreateItemDto: CreateItemDto = {
+    const mockItemDto: ItemDto = {
       name: 'teste',
       description: 'description teste',
       discount: 0,

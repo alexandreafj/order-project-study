@@ -1,12 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateItemDto } from '../dto/createItem.dto';
+import { ItemDto } from '../dto/Item-dto';
 import { ItemService } from '../service/item.service';
 import { ItemController } from './item.controller';
 import { ItemTypes } from '../class/item-types';
 import { ItemFilters } from '../class/item-filters';
-import { UpdateItemDto } from '../dto/update-item.dto';
 import { Item } from '../class/Item';
-import { DeleteItemDto } from '../dto/delete-item.dto';
 import { LoggerWinstonService } from '../../common/helpers/service/logger-winston.service';
 
 const mockItemServiceMethods = {
@@ -54,7 +52,7 @@ describe('ItemController', () => {
   });
 
   it('should create item', async () => {
-    const createItemDto = new CreateItemDto();
+    const createItemDto = new ItemDto();
     await controller.createItem(createItemDto);
     expect(spyService.insertItem).toBeCalledTimes(1);
     expect(spyService.insertItem).toHaveBeenCalledWith(createItemDto);
@@ -75,14 +73,14 @@ describe('ItemController', () => {
   });
 
   it('should update item', async () => {
-    const updateItemDto = new UpdateItemDto();
+    const updateItemDto = new ItemDto();
     await controller.updateItem(updateItemDto);
     expect(spyService.updateItem).toBeCalledTimes(1);
     expect(spyService.updateItem).toHaveBeenCalledWith(updateItemDto);
   });
 
   it('should delete item', async () => {
-    const delteItemDto = new DeleteItemDto();
+    const delteItemDto = new ItemDto();
     const arrayDeleteItemsDto = [delteItemDto];
     await controller.deleteItem(arrayDeleteItemsDto);
     expect(spyService.deleteItem).toBeCalledTimes(1);
