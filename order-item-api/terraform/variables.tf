@@ -10,6 +10,12 @@ variable "gcp_region" {
   sensitive   = true
 }
 
+variable "container_registry_docker_image" {
+  description = "container name"
+  type = string
+  sensitive = true
+}
+
 variable "mysql_host" {
   description = "mysql host"
   type = string
