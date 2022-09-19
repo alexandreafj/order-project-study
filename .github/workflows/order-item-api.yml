@@ -4,6 +4,7 @@ on:
       - master
     paths:
       - 'order-item-api/**'
+  pull_request:    
 
 name: Build/Deploy new Revision
 env:
