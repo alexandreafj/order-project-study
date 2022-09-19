@@ -9,48 +9,59 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { WinstonLevels } from '../../common/helpers/class/winston-levels.enum';
+import { LoggerWinstonService } from '../../common/helpers/service/logger-winston.service';
 import { Item } from '../class/Item';
 import { ItemFilters } from '../class/item-filters';
-import { CreateItemDto } from '../dto/createItem.dto';
-import { UpdateItemDto } from '../dto/update-item.dto';
+import { ItemDto } from '../dto/Item-dto';
 import { ItemService } from '../service/item.service';
 
 @Controller('item')
 export class ItemController {
-  constructor(private readonly itemService: ItemService) { }
+  constructor(private readonly itemService: ItemService, private readonly loggerWinstonService: LoggerWinstonService) { }
   @Get()
+  @HttpCode(200)
   async getItem(@Param() params: ItemFilters): Promise<Array<Item>> {
     try {
       const items = await this.itemService.selectItems(params);
+      this.loggerWinstonService.log(WinstonLevels.Info, 'test');
       return items;
     } catch (error) {
-      console.log(error);
-      console.error(error);
-      throw new InternalServerErrorException('try again later');
+      this.loggerWinstonService.log(WinstonLevels.Error, error.message);
+      throw new InternalServerErrorException({ message: 'Something went wrong, try again later.' });
     }
   }
 
   @Post()
   @HttpCode(201)
-  async createItem(@Body() createItemDto: CreateItemDto) {
+  async createItem(@Body() createItemDto: ItemDto) {
     try {
       await this.itemService.insertItem(createItemDto);
     } catch (error) {
-      console.error(error);
+      this.loggerWinstonService.log(WinstonLevels.Error, error.message);
+      throw new InternalServerErrorException({ message: 'Something went wrong, try again later.' });
     }
   }
 
   @Put()
   @HttpCode(204)
-  async updateItem(@Body() updateItemDto: UpdateItemDto) {
+  async updateItem(@Body() updateItemDto: ItemDto) {
     try {
       await this.itemService.updateItem(updateItemDto);
     } catch (error) {
-
+      this.loggerWinstonService.log(WinstonLevels.Error, error.message);
+      throw new InternalServerErrorException({ message: 'Something went wrong, try again later.' });
     }
   }
 
   @Delete()
   @HttpCode(204)
-  async deleteItem() { }
+  async deleteItem(@Body() deleteItemsDto: Array<ItemDto>) {
+    try {
+      await this.itemService.deleteItem(deleteItemsDto);
+    } catch (error) {
+      this.loggerWinstonService.log(WinstonLevels.Error, error.message);
+      throw new InternalServerErrorException({ message: 'Something went wrong, try again later.' });
+    }
+  }
 }

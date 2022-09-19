@@ -1,9 +1,8 @@
-enum ItemTypes {
+export enum ItemTypes {
   Eletronic = 'eletronic',
   Headset = 'headset',
-  Watch = 'watche',
+  Watch = 'watch',
   Phone = 'phone',
   Mouse = 'mouse',
   Tv = 'tv',
 }
-export { ItemTypes };
