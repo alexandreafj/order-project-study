@@ -40,7 +40,6 @@ resource "google_cloud_run_service" "default" {
         env {
           name = "MYSQL_HOST"
           value = var.mysql_host
-
         }
         env {
           name = "MYSQL_PORT"

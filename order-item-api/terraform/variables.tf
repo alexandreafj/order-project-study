@@ -27,3 +27,15 @@ variable "gcp_member" {
   type        = string
   sensitive   = true
 }
+
+variable "mysql_host" {
+  description = "mysql host"
+  type = string
+  sensitive = true
+}
+
+variable "redis_host" {
+  description = "redis host"
+  type = string
+  sensitive = true
+}
