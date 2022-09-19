@@ -1,8 +1,7 @@
 on:
-  # push:
-  #   branches:
-  #     - master
   push:
+    branches:
+      - master
     paths:
       - 'order-item-api/**'
 
@@ -33,7 +32,7 @@ jobs:
         run: npm ci
 
       - name: run unity tests
-        run: npm run test:unity
+        run: npm t
     
   # build:
   #   needs: [running-tests]
