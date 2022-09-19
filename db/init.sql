@@ -1,14 +1,14 @@
-CREATE DATABASE order;
+CREATE DATABASE orders;
 
-USE order;
+USE orders;
 
 CREATE TABLE item(
 id int NOT NULL AUTO_INCREMENT,
 name varchar(255) NOT NULL,
 price integer NOT NULL,
 description varchar(255) NOT NULL,
-type ENUM('eletronic', 'headset', 'watch', 'phone', 'mouse', 'tv',) NOT NULL,
-discount integer NULL,
+type ENUM('eletronic', 'headset', 'watch', 'phone', 'mouse', 'tv') NOT NULL,
+discount int NULL,
 PRIMARY KEY(id)
 );
 

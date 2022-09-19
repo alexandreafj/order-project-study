@@ -6,7 +6,6 @@ import { LoggerWinstonService } from './common/helpers/service/logger-winston.se
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Item } from './entitys/item.entity';
-import { ItemRepository } from './repository/item.repository';
 
 @Module({
   imports: [
@@ -29,11 +28,12 @@ import { ItemRepository } from './repository/item.repository';
       port: Number(process.env.MYSQL_PORT) || 3306,
       username: process.env.MYSQL_USERNAME,
       password: process.env.MYSQL_PASSWORD,
+      database: 'orders',
       entities: [Item],
       synchronize: process.env.NODE_ENV === 'production' ? false : true,
     }),
   ],
   controllers: [ItemController],
-  providers: [ItemService, LoggerWinstonService, ItemRepository],
+  providers: [ItemService, LoggerWinstonService],
 })
 export class AppModule { }

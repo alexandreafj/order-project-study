@@ -15,7 +15,10 @@ export class Item {
   @Column()
   description: boolean;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: ItemTypes,
+  })
   type: ItemTypes;
 
   @Column()

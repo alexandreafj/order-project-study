@@ -14,7 +14,7 @@ USER node
 
 COPY --chown=node:node ["package.json", "package-lock.json", "./"]
 
-RUN npm ci
+RUN npm ci --silent
 
 COPY --chown=node:node . .
 
