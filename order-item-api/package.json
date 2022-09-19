@@ -18,8 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/integration/jest-e2e.json",
-    "test:e2e:cov": "jest --coverage --config ./test/integration/jest-e2e.json",
-    "test:unity": "jest --config ./test/unity/jest.json"
+    "test:e2e:cov": "jest --coverage --config ./test/integration/jest-e2e.json"
   },
   "dependencies": {
     "@liaoliaots/nestjs-redis": "^9.0.2",

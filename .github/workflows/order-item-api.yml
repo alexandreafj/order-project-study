@@ -8,7 +8,7 @@ on:
 name: Build/Deploy new Revision
 env:
   DOCKER_ROOT_IMAGE_NAME: order-item-api:${{github.sha}}
-  DOCKER_IMAGE_NAME: ${{ secrets.DOCKER_IMAGE_NAME }}/order-item-api/:${{github.sha}}
+  DOCKER_IMAGE_NAME: ${{ secrets.DOCKER_IMAGE_NAME }}/order-item-api:${{github.sha}}
   REGION: ${{ secrets.REGION }}
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
 
