@@ -68,7 +68,7 @@ jobs:
   #       TF_VAR_service_account_private_key: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
   #       TF_VAR_container_registry_docker_image: 
   #       TF_VAR_project_id: ${{ secrets.PROJECT_ID }}
-  #       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  #       GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PIPELINE }}
 
   #     defaults:
   #       run:
