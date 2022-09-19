@@ -66,8 +66,6 @@ jobs:
       env:
         TF_VAR_container_registry_docker_image: ${{ secrets.DOCKER_IMAGE_NAME }}/order-item-api:${{github.sha}}
         TF_VAR_gcp_project: ${{ secrets.PROJECT_ID }}
-        TF_VAR_tf_organization_name: ${{ secrets.TF_ORGANIZATION_NAME }}
-        TF_VAR_tf_workspace_name: ${{ secrets.TF_WORKSPACE_NAME }}
         TF_VAR_gcp_region: ${{ secrets.REGION }}
         TF_VAR_mysql_host: ${{ secrets.GCP_MYSQL_HOST }}
         TF_VAR_mysql_username: ${{ secrets.GCP_MYSQL_USERNAME }}

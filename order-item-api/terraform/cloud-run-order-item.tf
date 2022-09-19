@@ -6,10 +6,10 @@ terraform {
     }
   }
   backend "remote" {
-    organization = var.tf_organization_name
+    organization = "alexandre"
 
     workspaces {
-      name = var.tf_workspace_name
+      name = "order-item-api"
     }
   }
 }
