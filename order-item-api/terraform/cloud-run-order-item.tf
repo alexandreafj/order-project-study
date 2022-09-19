@@ -46,6 +46,22 @@ resource "google_cloud_run_service" "default" {
           value = "3306"
         }
         env {
+          name = "MYSQL_USERNAME"
+          value = var.mysql_username
+        }
+        env {
+          name = "MYSQL_PASSWORD"
+          value = var.mysql_password
+        }
+        env {
+          name = "MYSQL_DATABASE"
+          value = var.mysql_database
+        }
+        env {
+          name = "MYSQL_PORT"
+          value = "3306"
+        }
+        env {
           name = "REDIS_HOST"
           value = var.redis_host
         }
@@ -55,14 +71,14 @@ resource "google_cloud_run_service" "default" {
         }
         env {
           name = "REDIS_NAMESPACE"
-          value = "order-item-api"
+          value = var.redis_namespace
         }
         env {
           name = "NODE_ENV"
           value = "production"
         }
         ports {
-          name           = "http1"
+          name           = "h2c"
           container_port = "8080"
           protocol       = "TCP"
         }
@@ -83,6 +99,8 @@ resource "google_cloud_run_service" "default" {
     metadata {
       annotations = {
         "autoscaling.knative.dev/maxScale" = "4"
+        "run.googleapis.com/cloudsql-instances" = var.gcp_sql_database_name
+        "run.googleapis.com/client-name"        = "terraform"
       }
     }
   }
@@ -100,7 +118,7 @@ resource "google_cloud_run_service" "default" {
     latest_revision = true
   }
 
-  depends_on                 = [google_project_service.run_api, google_secret_manager_secret_version.secret-version-data]
+  depends_on                 = [google_project_service.run_api]
   autogenerate_revision_name = true
 
 }
