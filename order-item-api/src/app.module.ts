@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ItemController } from './item/controller/item.controller';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { ItemService } from './item/service/item.service';
 import { LoggerWinstonService } from './common/helpers/service/logger-winston.service';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Item } from './entitys/item.entity';
+import { ItemModule } from './item/item.module';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -33,8 +33,10 @@ import { Item } from './entitys/item.entity';
       entities: [Item],
       synchronize: process.env.NODE_ENV === 'production' ? false : true,
     }),
+    ItemModule,
   ],
-  controllers: [ItemController],
-  providers: [ItemService, LoggerWinstonService],
+  providers: [LoggerWinstonService],
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private dataSource: DataSource) { }
+}
