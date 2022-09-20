@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { Repo } from '../common/interfaces/Repo';
 import { LoggerWinstonService } from '../common/helpers/service/logger-winston.service';
 import { WinstonLevels } from '../common/helpers/class/winston-levels.enum';
+import { ItemFilters } from 'src/item/class/item-filters';
+import { ItemDeleteDto } from 'src/item/dto/item-delete-dto';
 
 @Injectable()
 export class ItemRepository implements Repo<ItemEntity>{
@@ -19,30 +21,29 @@ export class ItemRepository implements Repo<ItemEntity>{
         return !!foundItem;
     }
     async save(t: ItemEntity) {
-        const queryRunner = this.ItemRepo.queryRunner;
+        const queryRunner = this.ItemRepo.manager.connection.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
         try {
-            await this.ItemRepo.save(t)
-            await queryRunner.rollbackTransaction();
-            await queryRunner.release();
-        } catch (err) {
-            this.logger.log(WinstonLevels.Error, JSON.stringify(err));
+            await queryRunner.manager.save(t);
+            await queryRunner.commitTransaction();
+        } catch (error) {
+            console.error(error);
+            this.logger.log(WinstonLevels.Error, JSON.stringify(error));
             await queryRunner.rollbackTransaction();
         } finally {
             await queryRunner.release();
         }
     }
-    async delete(t: ItemEntity) {
-        const queryRunner = this.ItemRepo.queryRunner;
+    async delete(t: ItemDeleteDto): Promise<void> {
+        const queryRunner = this.ItemRepo.manager.connection.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
         try {
-            await this.ItemRepo.delete(t)
-            await queryRunner.rollbackTransaction();
-            await queryRunner.release();
-        } catch (err) {
-            this.logger.log(WinstonLevels.Error, JSON.stringify(err));
+            await queryRunner.manager.delete(ItemEntity, t.ids);
+            await queryRunner.commitTransaction();
+        } catch (error) {
+            this.logger.log(WinstonLevels.Error, JSON.stringify(error));
             await queryRunner.rollbackTransaction();
         } finally {
             await queryRunner.release();
@@ -51,8 +52,32 @@ export class ItemRepository implements Repo<ItemEntity>{
     async update(t: ItemEntity) {
         try {
             await this.ItemRepo.createQueryBuilder().update(ItemEntity).set({ ...t }).where("id = :id", { id: t.id }).execute()
-        } catch (err) {
-            this.logger.log(WinstonLevels.Error, JSON.stringify(err));
+        } catch (error) {
+            this.logger.log(WinstonLevels.Error, JSON.stringify(error));
+        }
+    }
+
+    async select(itemFilter: ItemFilters): Promise<Array<ItemEntity>> {
+        try {
+            return await this.ItemRepo.find({
+                select: {
+                    id: true,
+                    description: true,
+                    discount: true,
+                    name: true,
+                    price: true,
+                    type: true,
+                },
+                where: {
+                    name: itemFilter?.name ?? null,
+                    price: itemFilter?.price ?? null,
+                    type: itemFilter?.type ?? null,
+                },
+                take: itemFilter.limit,
+                skip: itemFilter.offset,
+            });
+        } catch (error) {
+            this.logger.log(WinstonLevels.Error, JSON.stringify(error));
         }
     }
 }
