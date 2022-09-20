@@ -8,23 +8,23 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { WinstonLevels } from '../../common/helpers/class/winston-levels.enum';
 import { LoggerWinstonService } from '../../common/helpers/service/logger-winston.service';
-import { Item } from '../class/Item';
 import { ItemFilters } from '../class/item-filters';
+import { ItemDeleteDto } from '../dto/item-delete-dto';
 import { ItemDto } from '../dto/Item-dto';
 import { ItemService } from '../service/item.service';
 
-@Controller('item')
+@Controller('api/v1/item')
 export class ItemController {
   constructor(private readonly itemService: ItemService, private readonly loggerWinstonService: LoggerWinstonService) { }
   @Get()
   @HttpCode(200)
-  async getItem(@Param() params: ItemFilters): Promise<Array<Item>> {
+  async getItem(@Query() params: ItemFilters): Promise<Array<ItemDto>> {
     try {
       const items = await this.itemService.selectItems(params);
-      this.loggerWinstonService.log(WinstonLevels.Info, 'test');
       return items;
     } catch (error) {
       this.loggerWinstonService.log(WinstonLevels.Error, error.message);
@@ -56,7 +56,7 @@ export class ItemController {
 
   @Delete()
   @HttpCode(204)
-  async deleteItem(@Body() deleteItemsDto: Array<ItemDto>) {
+  async deleteItem(@Body() deleteItemsDto: ItemDeleteDto) {
     try {
       await this.itemService.deleteItem(deleteItemsDto);
     } catch (error) {
