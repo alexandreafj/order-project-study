@@ -1,18 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as csurf from 'csurf';
 import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import * as cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 require('newrelic');
 let server = null;
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
   });
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
   app.use(helmet());
-  app.use(cookieParser());
-  app.use(csurf({ cookie: true }));
   app.enableShutdownHooks();
   server = await app.listen(process.env.PORT || 8080);
   console.log(`server running on port ${process.env.PORT || 8080}`);
@@ -37,8 +40,6 @@ const gracefullShutdown = (event) => {
     // assure that no client is going to request any in this period
     // but if that's someone using, wait until finish
     server.close(() => {
-      console.log('http server closed');
-      console.log('db connection closed');
       process.exit(code);
     });
   };
