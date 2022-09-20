@@ -35,7 +35,7 @@ resource "google_cloud_run_service" "default" {
         image = var.container_registry_docker_image
         env {
           name  = "INSTANCE_UNIX_SOCKET"
-          value = var.instance_unix_socket
+          value = var.gcp_instance_unix_socket
         }
         env {
           name  = "MYSQL_PORT"

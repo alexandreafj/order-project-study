@@ -16,8 +16,8 @@ variable "container_registry_docker_image" {
   sensitive   = true
 }
 
-variable "instance_unix_socket" {
-  description = "socket instance for sql connection"
+variable "gcp_instance_unix_socket" {
+  description = "gcp socket instance name for sql connection"
   type        = string
   sensitive   = true
 }
