@@ -25,7 +25,10 @@ export class ItemRepository implements Repo<ItemEntity>{
         await queryRunner.connect();
         await queryRunner.startTransaction();
         try {
-            await queryRunner.manager.save(t);
+            const itemEntity = this.ItemRepo.create({
+                ...t,
+            });
+            await queryRunner.manager.save(itemEntity);
             await queryRunner.commitTransaction();
         } catch (error) {
             console.error(error);
