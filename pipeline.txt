@@ -4,6 +4,7 @@ on:
       - master
     paths:
       - 'order-item-api/**'
+  pull_request:    
 
 name: Build/Deploy new Revision
 env:
@@ -36,7 +37,6 @@ jobs:
         run: npm t
     
   build:
-    needs: [running-unity-tests]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
@@ -62,7 +62,6 @@ jobs:
         run: docker push ${{env.DOCKER_IMAGE_NAME}}
 
   deploy-revision:
-      needs: [build]
       runs-on: ubuntu-latest
       environment: production
       env:
@@ -106,6 +105,46 @@ jobs:
         id: format
         run: terraform fmt && terraform fmt -check
 
-      - name: Terraform Plan/Apply
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request'
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform plan -no-color && terraform apply -auto-approve
+        run: terraform apply -auto-approve
