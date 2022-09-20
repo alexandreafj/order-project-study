@@ -24,7 +24,7 @@ import { Item } from './entitys/item.entity';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      socketPath: process.env.NODE_ENV === 'production' ? process.env.INSTANCE_UNIX_SOCKET : null,
+      socketPath: process.env.NODE_ENV === 'production' ? `/cloudsql/${process.env.INSTANCE_UNIX_SOCKET}` : null,
       host: process.env.NODE_ENV !== 'production' ? process.env.MYSQL_HOST : null,
       port: Number(process.env.MYSQL_PORT) || 3306,
       username: process.env.MYSQL_USERNAME,
