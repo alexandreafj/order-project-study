@@ -4,11 +4,11 @@ import { ItemService } from '../service/item.service';
 import { ItemController } from './item.controller';
 import { ItemTypes } from '../class/item-types';
 import { ItemFilters } from '../class/item-filters';
-import { Item } from '../class/Item';
 import { LoggerWinstonService } from '../../common/helpers/service/logger-winston.service';
+import { ItemDeleteDto } from '../dto/item-delete-dto';
 
 const mockItemServiceMethods = {
-  selectItems: jest.fn(() => Promise.resolve([new Item(), new Item()])),
+  selectItems: jest.fn(() => Promise.resolve([new ItemDto(), new ItemDto()])),
   insertItem: jest.fn(() => Promise.resolve([])),
   deleteItem: jest.fn(() => Promise.resolve()),
   updateItem: jest.fn(() => Promise.resolve()),
@@ -36,19 +36,8 @@ describe('ItemController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-    expect(controller.createItem).toBeDefined();
-    expect(controller.updateItem).toBeDefined();
-    expect(controller.getItem).toBeDefined();
-    expect(controller.deleteItem).toBeDefined();
-
     expect(spyService).toBeDefined();
-    expect(spyService.selectItems).toBeDefined();
-    expect(spyService.insertItem).toBeDefined();
-    expect(spyService.deleteItem).toBeDefined();
-    expect(spyService.updateItem).toBeDefined();
-
     expect(spyLoggerService).toBeDefined();
-    expect(spyLoggerService.log).toBeDefined();
   });
 
   it('should create item', async () => {
@@ -80,10 +69,10 @@ describe('ItemController', () => {
   });
 
   it('should delete item', async () => {
-    const delteItemDto = new ItemDto();
-    const arrayDeleteItemsDto = [delteItemDto];
-    await controller.deleteItem(arrayDeleteItemsDto);
+    const itemDeleteDto = new ItemDeleteDto();
+    itemDeleteDto.ids = [0];
+    await controller.deleteItem(itemDeleteDto);
     expect(spyService.deleteItem).toBeCalledTimes(1);
-    expect(spyService.deleteItem).toHaveBeenCalledWith(arrayDeleteItemsDto);
+    expect(spyService.deleteItem).toHaveBeenCalledWith(itemDeleteDto);
   });
 });
