@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     google = {
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
       version = "4.36.0"
     }
   }
@@ -34,44 +34,52 @@ resource "google_cloud_run_service" "default" {
       containers {
         image = var.container_registry_docker_image
         env {
-          name = "MYSQL_HOST"
-          value = var.mysql_host
+          name  = "INSTANCE_UNIX_SOCKET"
+          value = var.instance_unix_socket
         }
         env {
-          name = "MYSQL_PORT"
+          name  = "MYSQL_PORT"
           value = "3306"
         }
         env {
-          name = "MYSQL_USERNAME"
+          name  = "MYSQL_USERNAME"
           value = var.mysql_username
         }
         env {
-          name = "MYSQL_PASSWORD"
+          name  = "MYSQL_PASSWORD"
           value = var.mysql_password
         }
         env {
-          name = "MYSQL_DATABASE"
+          name  = "MYSQL_DATABASE"
           value = var.mysql_database
         }
         env {
-          name = "MYSQL_PORT"
+          name  = "MYSQL_PORT"
           value = "3306"
         }
         env {
-          name = "REDIS_HOST"
+          name  = "REDIS_HOST"
           value = var.redis_host
         }
         env {
-          name = "REDIS_PORT"
+          name  = "REDIS_PORT"
           value = "6379"
         }
         env {
-          name = "REDIS_NAMESPACE"
+          name  = "REDIS_NAMESPACE"
           value = var.redis_namespace
         }
         env {
-          name = "NODE_ENV"
+          name  = "NODE_ENV"
           value = "production"
+        }
+        env {
+          name  = "NEW_RELIC_LICENSE_KEY"
+          value = var.new_relic_license_key
+        }
+        env {
+          name  = "NEW_RELIC_APP_NAME"
+          value = var.new_relic_app_name
         }
         ports {
           name           = "h2c"
@@ -94,7 +102,7 @@ resource "google_cloud_run_service" "default" {
 
     metadata {
       annotations = {
-        "autoscaling.knative.dev/maxScale" = "4"
+        "autoscaling.knative.dev/maxScale"      = "4"
         "run.googleapis.com/cloudsql-instances" = var.gcp_sql_database_name
         "run.googleapis.com/client-name"        = "terraform"
       }
