@@ -28,7 +28,13 @@ describe('ItemService', () => {
   });
 
   it('should create item', async () => {
-
+    const mockItemDto: ItemDto = {
+      name: 'teste',
+      description: 'description teste',
+      discount: 0,
+      price: 10,
+      type: ItemTypes.Eletronic,
+    };
 
   });
   it('should delete item', async () => { })
