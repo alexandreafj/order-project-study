@@ -107,7 +107,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -lock=false
+        run: terraform plan
         continue-on-error: true
 
       - name: Terraform Plan Status
@@ -116,4 +116,4 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        run: terraform apply -auto-approve -lock=false
+        run: terraform apply -auto-approve
