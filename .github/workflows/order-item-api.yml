@@ -75,6 +75,8 @@ jobs:
         TF_VAR_redis_namespace: ${{ secrets.REDIS_NAMESPACE }}
         TF_VAR_redis_host: ${{ secrets.GCP_REDIS_HOST }}
         TF_VAR_gcp_sql_database_name: ${{ secrets.GCP_SQL_NAME }}
+        TF_VAR_new_relic_license_key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+        TF_VAR_new_relic_app_name: ${{ secrets.NEW_RELIC_APP_NAME }}
         GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PIPELINE }}
 
       defaults:
