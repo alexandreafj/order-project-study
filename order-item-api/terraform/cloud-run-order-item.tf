@@ -34,10 +34,6 @@ resource "google_cloud_run_service" "default" {
       containers {
         image = var.container_registry_docker_image
         env {
-          name  = "PORT"
-          value = 8080
-        }
-        env {
           name = "MYSQL_HOST"
           value = var.mysql_host
         }
