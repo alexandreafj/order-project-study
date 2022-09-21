@@ -8,7 +8,7 @@ docker-compose up
 ```
 
 ## Running local unit tests
-Reach by terminal the backend-swordhealth folder and execute:
+Reach by terminal the api folder and execute:
 ```
 npm ci --silent
 npm run test:unit
