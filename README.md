@@ -11,7 +11,7 @@ docker-compose up
 Reach by terminal the api folder and execute:
 ```
 npm ci --silent
-npm run test:unit
+npm t
 ```
 
 ## Tech Stack

@@ -4,6 +4,7 @@ on:
       - master
     paths:
       - 'order-item-api/**'
+      - '!**.md'
 
 name: Build/Deploy new Revision
 env:
