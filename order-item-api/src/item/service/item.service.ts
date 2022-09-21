@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Item } from '../class/Item';
 import { ItemFilters } from '../class/item-filters';
 import { ItemDto } from '../dto/Item-dto';
@@ -18,18 +18,22 @@ export class ItemService {
         return itemsDto;
     }
 
-    async insertItem(createItemDto: ItemDto) {
+    async insertItem(createItemDto: ItemDto): Promise<void> {
         const itemEntity = ItemMap.toEntity(createItemDto);
         delete itemEntity.id;
         await this.itemRepository.save(itemEntity);
     }
 
-    async deleteItem(deleteItemsDto: ItemDeleteDto) {
+    async deleteItem(deleteItemsDto: ItemDeleteDto): Promise<void> {
         await this.itemRepository.delete(deleteItemsDto);
     }
 
     async updateItem(updateItemDto: ItemDto) {
         const updateItem = ItemMap.toEntity(updateItemDto);
+        const existItem = await this.itemRepository.exists(updateItem);
+        if (existItem === false) {
+            throw new NotFoundException('Item not found!');
+        }
         await this.itemRepository.update(updateItem);
     }
 }

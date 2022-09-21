@@ -8,8 +8,11 @@ import { ItemTypes } from '../class/item-types';
 import { ItemMap } from '../class/item-map';
 import { Item } from '../../entitys/item.entity';
 import { Repository } from 'typeorm';
-import { ItemFilters } from '../class/item-filters';
 import { ItemDeleteDto } from '../dto/item-delete-dto';
+import { NotFoundException } from '@nestjs/common';
+import { mockItemsFilters } from '../../../test/helpers/mock-item-helpers';
+
+const mockItemFilters = mockItemsFilters();
 
 describe('ItemService', () => {
   let service: ItemService;
@@ -22,6 +25,10 @@ describe('ItemService', () => {
 
     service = module.get<ItemService>(ItemService);
     itemRepository = module.get(ItemRepository);
+  });
+
+  afterEach(async () => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -60,15 +67,27 @@ describe('ItemService', () => {
     mockItemUpdateDto.type = ItemTypes.Eletronic;
     const mockItemUpdate = ItemMap.toEntity(mockItemUpdateDto);
     const spyUpdate = jest.spyOn(itemRepository, 'update').mockImplementation(() => Promise.resolve());
+    const spyExists = jest.spyOn(itemRepository, 'exists').mockImplementation(() => Promise.resolve(true));
     await service.updateItem(mockItemUpdateDto);
     expect(spyUpdate).toBeCalledTimes(1);
     expect(spyUpdate).toBeCalledWith(mockItemUpdate);
+    expect(spyExists).toBeCalledTimes(1);
+    expect(spyExists).toBeCalledWith(mockItemUpdate);
+  })
+  it('should throw error when user is not found on trying to update', async () => {
+    const mockItemUpdateDto = new ItemDto();
+    mockItemUpdateDto.name = 'mock';
+    mockItemUpdateDto.description = 'teste';
+    mockItemUpdateDto.discount = 0;
+    mockItemUpdateDto.price = 100;
+    mockItemUpdateDto.type = ItemTypes.Eletronic;
+    const mockItemUpdate = ItemMap.toEntity(mockItemUpdateDto);
+    const spyExists = jest.spyOn(itemRepository, 'exists').mockImplementation(() => Promise.resolve(false));
+    await expect(service.updateItem(mockItemUpdateDto)).rejects.toEqual(new NotFoundException('Item not found!'));
+    expect(spyExists).toBeCalledTimes(1);
+    expect(spyExists).toBeCalledWith(mockItemUpdate);
   })
   it('should return at least one item', async () => {
-    const mockItemFilters = new ItemFilters();
-    mockItemFilters.limit = 10;
-    mockItemFilters.offset = 0;
-    mockItemFilters.name = 'teste';
     const spySelect = jest.spyOn(itemRepository, 'select').mockImplementation(() => Promise.resolve([new Item()]));
     const response = await service.selectItems(mockItemFilters);
     expect(spySelect).toBeCalledTimes(1);
@@ -77,10 +96,6 @@ describe('ItemService', () => {
   })
 
   it('should return zero selected items', async () => {
-    const mockItemFilters = new ItemFilters();
-    mockItemFilters.limit = 10;
-    mockItemFilters.offset = 0;
-    mockItemFilters.name = 'teste';
     const spySelect = jest.spyOn(itemRepository, 'select').mockImplementation(() => Promise.resolve(undefined));
     const response = await service.selectItems(mockItemFilters);
     expect(spySelect).toBeCalledTimes(1);

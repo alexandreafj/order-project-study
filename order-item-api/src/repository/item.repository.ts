@@ -18,7 +18,7 @@ export class ItemRepository implements Repo<ItemEntity>{
 
     async exists(t: ItemEntity): Promise<boolean> {
         const foundItem = await this.ItemRepo.find({ where: { id: t.id } });
-        return !!foundItem;
+        return !!foundItem && foundItem.length > 0;
     }
     async save(t: ItemEntity) {
         const queryRunner = this.ItemRepo.manager.connection.createQueryRunner();
