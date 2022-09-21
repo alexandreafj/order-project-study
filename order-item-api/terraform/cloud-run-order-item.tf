@@ -82,7 +82,7 @@ resource "google_cloud_run_service" "default" {
           value = var.new_relic_app_name
         }
         ports {
-          name           = "h2c"
+          name           = "http1"
           container_port = "8080"
           protocol       = "TCP"
         }

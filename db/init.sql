@@ -18,4 +18,5 @@ GRANT DELETE ON * . * TO 'test'@'%';
 GRANT INSERT ON * . * TO 'test'@'%';
 GRANT SELECT ON * . * TO 'test'@'%';
 GRANT UPDATE ON * . * TO 'test'@'%';
+GRANT ALTER ON * . * TO 'test'@'%';
 FLUSH PRIVILEGES;
