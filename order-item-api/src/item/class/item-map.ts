@@ -12,6 +12,7 @@ export abstract class ItemMap {
             type: raw?.type ?? undefined,
         } as unknown as Item;
     }
+
     public static toEntityArray(raw: Array<ItemDto>): Array<Item> {
         return raw?.map(entity => {
             return {
@@ -24,6 +25,7 @@ export abstract class ItemMap {
             } as unknown as Item;
         }) ?? [];
     }
+
     public static toDTO(item: Item): ItemDto {
         return {
             id: item?.id ?? undefined,
@@ -34,6 +36,7 @@ export abstract class ItemMap {
             discount: item?.discount ?? undefined,
         } as unknown as ItemDto;
     }
+
     public static toArrayDTO(arrItem: Array<Item>): Array<ItemDto> {
         return arrItem?.map(entity => {
             return {

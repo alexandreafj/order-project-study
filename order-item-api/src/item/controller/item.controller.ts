@@ -22,6 +22,7 @@ export class ItemController {
   private readonly keyPatternSelect = 'select:item';
 
   constructor(private readonly itemService: ItemService, private readonly loggerWinstonService: LoggerWinstonService, private readonly cacheService: CacheService) { }
+
   @Get()
   @HttpCode(200)
   async getItem(@Query() params: ItemFilters): Promise<Array<ItemDto>> {
