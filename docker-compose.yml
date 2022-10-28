@@ -50,5 +50,46 @@ services:
       - 8081:8081
     networks:
       - order-network
+  order-api:
+    image: order-api
+    container_name: order-api
+    build:
+      context: ./order-api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./order-api:/order-api
+    depends_on:
+      - order-item-api
+    environment:
+      PORT: 8082
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USERNAME: test
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: order
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_NAMESPACE: 'order-api'
+      NODE_ENV: development
+    ports:
+      - 8082:8082
+    networks:
+      - order-network
+  order-subscriber:
+    image: order-subscriber
+    container_name: order-subscriber
+    build:
+      context: ./order-subscriber
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./order-subscriber:/order-subscriber
+    environment:
+      PROJECT_ID: 
+      ORDER_SUBSCRIPTION_NAME: 
+      NODE_ENV: development
+      PRIVATE_KEY: 
+      CLIENT_ID:
+    networks:
+      - order-network
 networks:
   order-network:

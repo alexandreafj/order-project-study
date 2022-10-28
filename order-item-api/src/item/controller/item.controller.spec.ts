@@ -4,8 +4,10 @@ import { ItemService } from '../service/item.service';
 import { ItemController } from './item.controller';
 import { LoggerWinstonService } from '../../common/helpers/service/logger-winston.service';
 import { ItemDeleteDto } from '../dto/item-delete-dto';
-import { CacheService } from '../../common/helpers/service/cache.service';
+import { CacheModule } from '../../common/helpers/cache/cache.module';
+import { CacheMethodsToken } from '../../common/helpers/cache/cache.interface';
 import { mockItemsFilters } from '../../../test/helpers/mock-item-helpers';
+import { NotFoundException } from '@nestjs/common';
 
 const mockItemFilters = mockItemsFilters();
 
@@ -16,6 +18,7 @@ const mockItemServiceMethods = {
   insertItem: jest.fn(() => Promise.resolve([])),
   deleteItem: jest.fn(() => Promise.resolve()),
   updateItem: jest.fn(() => Promise.resolve()),
+  existItem: jest.fn(() => Promise.resolve(false)),
 };
 
 const mockCacheServiceMethods = {
@@ -28,26 +31,26 @@ describe('ItemController', () => {
   let controller: ItemController;
   let itemService: ItemService;
   let spyLoggerService: LoggerWinstonService;
-  let cacheService: CacheService;
 
   beforeEach(async () => {
     const ApiServiceProvider = {
       provide: ItemService,
       useFactory: () => mockItemServiceMethods,
     };
-    const cacheServiceProvider = {
-      provide: CacheService,
-      useFactory: () => mockCacheServiceMethods,
-    }
     const module: TestingModule = await Test.createTestingModule({
+      imports: [],
       controllers: [ItemController],
-      providers: [ItemService, ApiServiceProvider, LoggerWinstonService, cacheServiceProvider],
+      providers: [
+        ItemService,
+        ApiServiceProvider,
+        LoggerWinstonService,
+        CacheModule,
+        { provide: CacheMethodsToken, useFactory: () => mockCacheServiceMethods }],
     }).compile();
 
     controller = module.get<ItemController>(ItemController);
     itemService = module.get<ItemService>(ItemService);
     spyLoggerService = module.get<LoggerWinstonService>(LoggerWinstonService);
-    cacheService = module.get<CacheService>(CacheService);
   });
 
   afterEach(async () => {
@@ -58,51 +61,54 @@ describe('ItemController', () => {
     expect(controller).toBeDefined();
     expect(itemService).toBeDefined();
     expect(spyLoggerService).toBeDefined();
-    expect(cacheService).toBeDefined();
   });
 
   it('should create item', async () => {
     const createItemDto = new ItemDto();
-    const spyDel = jest.spyOn(cacheService, 'del').mockImplementation(() => Promise.resolve());
     await controller.createItem(createItemDto);
-    expect(spyDel).toBeCalledTimes(1);
-    expect(spyDel).toHaveBeenCalledWith(mockKeyPatten);
+    expect(mockCacheServiceMethods.del).toBeCalledTimes(1);
+    expect(mockCacheServiceMethods.del).toHaveBeenCalledWith(mockKeyPatten);
     expect(itemService.insertItem).toBeCalledTimes(1);
     expect(itemService.insertItem).toHaveBeenCalledWith(createItemDto);
   });
 
   it('should get item', async () => {
     const mockKey = `select:item:${JSON.stringify(mockItemFilters)}`;
-    const spyGet = jest.spyOn(cacheService, 'get').mockImplementation(() => Promise.resolve(null));
-    const spySet = jest.spyOn(cacheService, 'set').mockImplementation(() => Promise.resolve('OK'));
     const response = await controller.getItem(mockItemFilters);
     expect(itemService.selectItems).toBeCalledTimes(1);
     expect(itemService.selectItems).toHaveBeenCalledWith(mockItemFilters);
     expect(response.length).toBe(2);
     expect(response).toBeInstanceOf(Array);
-    expect(spyGet).toBeCalledTimes(1);
-    expect(spyGet).toBeCalledWith(mockKey);
-    expect(spySet).toBeCalledTimes(1);
-    expect(spySet).toBeCalledWith(mockKey, response);
+    expect(mockCacheServiceMethods.get).toBeCalledTimes(1);
+    expect(mockCacheServiceMethods.get).toBeCalledWith(mockKey);
+    expect(mockCacheServiceMethods.set).toBeCalledTimes(1);
+    expect(mockCacheServiceMethods.set).toBeCalledWith(mockKey, response);
   });
 
   it('should update item', async () => {
     const updateItemDto = new ItemDto();
-    const spyDel = jest.spyOn(cacheService, 'del').mockImplementation(() => Promise.resolve());
     await controller.updateItem(updateItemDto);
-    expect(spyDel).toBeCalledTimes(1);
-    expect(spyDel).toHaveBeenCalledWith(mockKeyPatten);
+    expect(mockCacheServiceMethods.del).toBeCalledTimes(1);
+    expect(mockCacheServiceMethods.del).toHaveBeenCalledWith(mockKeyPatten);
     expect(itemService.updateItem).toBeCalledTimes(1);
     expect(itemService.updateItem).toHaveBeenCalledWith(updateItemDto);
+  });
+
+  it('should not update item', async () => {
+    const updateItemDto = new ItemDto();
+    const spyExists = jest.spyOn(mockItemServiceMethods, 'existItem').mockImplementation(() => Promise.resolve(true));
+    await expect(controller.updateItem(updateItemDto)).rejects.toEqual(new NotFoundException('Item not found!'));
+    expect(spyExists).toBeCalledTimes(1);
+    expect(mockCacheServiceMethods.del).toBeCalledTimes(0);
+    expect(itemService.updateItem).toBeCalledTimes(0);
   });
 
   it('should delete item', async () => {
     const itemDeleteDto = new ItemDeleteDto();
     itemDeleteDto.ids = [0];
-    const spyDel = jest.spyOn(cacheService, 'del').mockImplementation(() => Promise.resolve());
     await controller.deleteItem(itemDeleteDto);
-    expect(spyDel).toBeCalledTimes(1);
-    expect(spyDel).toHaveBeenCalledWith(mockKeyPatten)
+    expect(mockCacheServiceMethods.del).toBeCalledTimes(1);
+    expect(mockCacheServiceMethods.del).toHaveBeenCalledWith(mockKeyPatten)
     expect(itemService.deleteItem).toBeCalledTimes(1);
     expect(itemService.deleteItem).toHaveBeenCalledWith(itemDeleteDto);
   });
@@ -110,7 +116,7 @@ describe('ItemController', () => {
 
   it('should get item from cache', async () => {
     const mockKey = `select:item:${JSON.stringify(mockItemFilters)}`;
-    const spyGet = jest.spyOn(cacheService, 'get').mockImplementation(() => Promise.resolve('[{"id":0,"name":"test","description":"test","price":10,"discount":0,"type":"eletronic"}]'));
+    const spyGet = jest.spyOn(mockCacheServiceMethods, 'get').mockImplementation(() => Promise.resolve('[{"id":0,"name":"test","description":"test","price":10,"discount":0,"type":"eletronic"}]'));
     const response = await controller.getItem(mockItemFilters);
     expect(itemService.selectItems).toBeCalledTimes(0);
     expect(response.length).toBe(1);

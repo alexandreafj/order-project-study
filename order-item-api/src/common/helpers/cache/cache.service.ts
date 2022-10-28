@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
-import { LoggerWinstonService } from './logger-winston.service';
+import { LoggerWinstonService } from '../service/logger-winston.service';
 import { WinstonLevels } from '../class/winston-levels.enum';
+import { CacheMethods } from './cache.interface';
+
+export enum ExpireFormat {
+    Minutes = 'm',
+    Hour = 'h',
+    Days = 'd',
+}
 
 @Injectable()
-export class CacheService {
+export class CacheService implements CacheMethods {
     private readonly expireInMinutes = 60;
     private readonly expireInHours = 60 * 60;
     private readonly expireInDays = this.expireInHours * 24;
@@ -15,7 +22,7 @@ export class CacheService {
         private readonly logger: LoggerWinstonService,
     ) { }
 
-    async set(key: string, value: any, expireFormat = "h", expire = 1): Promise<string> {
+    async set(key: string, value: any, expireFormat: ExpireFormat.Hour, expire = 1): Promise<string> {
         try {
             const typeExpiration = {
                 m: this.expireInMinutes * expire,
