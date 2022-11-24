@@ -33,7 +33,7 @@
     "cookie-parser": "^1.4.6",
     "csurf": "^1.11.0",
     "helmet": "^6.0.0",
-    "ioredis": "^5.2.3",
+    "ioredis": "^5.2.4",
     "mysql2": "^2.3.3",
     "newrelic": "^9.1.0",
     "reflect-metadata": "^0.1.13",
