@@ -21,7 +21,7 @@
     "test:e2e:cov": "jest --coverage --config ./test/integration/jest-e2e.json"
   },
   "dependencies": {
-    "@liaoliaots/nestjs-redis": "^9.0.3",
+    "@liaoliaots/nestjs-redis": "^9.0.4",
     "@nestjs/class-validator": "^0.13.4",
     "@nestjs/common": "^9.1.1",
     "@nestjs/core": "^9.1.1",
