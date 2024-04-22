@@ -34,7 +34,7 @@
     "csurf": "^1.11.0",
     "helmet": "^6.0.0",
     "ioredis": "^5.2.3",
-    "mysql2": "^2.3.3",
+    "mysql2": "^3.9.7",
     "newrelic": "^9.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
